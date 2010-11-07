@@ -36,6 +36,7 @@ from wsgiref.handlers import CGIHandler
 sys.path.insert(0, join_path(dirname(__file__), 'lib')) # extend sys.path
 
 from demjson import decode as decode_json
+from demjson import encode as encode_json
 
 from google.appengine.api.urlfetch import fetch as urlfetch, GET, POST
 from google.appengine.ext import db
@@ -98,6 +99,28 @@ class OAuthAccessToken(db.Model):
     oauth_token = db.StringProperty()
     oauth_token_secret = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
+
+class TwitterUser(db.Model):
+    id = db.IntegerProperty()
+    screen_name = db.StringProperty()
+    name = db.StringProperty()
+    description = db.TextProperty()
+    profile_image_url = db.LinkProperty()
+
+class User(db.Model):
+    """User"""
+    twitter_id = db.IntegerProperty()
+    name = db.StringProperty()
+    #notes = db.ListProperty(Note)
+
+class Note(db.Model):
+    """Note"""
+    id = db.IntegerProperty()
+    text = db.TextProperty()
+    created = db.DateTimeProperty(auto_now_add=True)
+    twitteruser = db.ReferenceProperty(TwitterUser)
+    user = db.ReferenceProperty(User)
+    #twitter_users = db.ListProperty(TwitterUser)
 
 # ------------------------------------------------------------------------------
 # oauth client
@@ -329,6 +352,50 @@ class OAuthHandler(RequestHandler):
         else:
             self.response.out.write(client.login())
 
+
+def require_login(fn):
+    def mapped():
+        if not client.get_cookie():
+            #redirect to login
+            return
+        return fn()
+    return mapped
+
+# ------------------------------------------------------------------------------
+# person handler
+# ------------------------------------------------------------------------------
+class PersonCollectionHandler(RequestHandler):
+    def get(self):
+        """Return a list of persons for the logged in user"""
+        persons = [{'id': 1,
+            'screen_name': 'test',
+            'name': 'Test User',
+            'description': 'Foo',
+            'profile_image_url': 'http://foo.de/bar.jpg'},
+            {'id': 2,
+            'screen_name': 'test2',
+            'name': 'Test User2',
+            'description': 'Foo2',
+            'profile_image_url': 'http://foo.de/bar2.jpg'}
+            ]
+        self.response.out.write(encode_json(persons))
+
+
+    def post(self):
+        """add a new person"""
+        pass
+
+class PersonHandler(RequestHandler):
+    def get(self, id=None):
+        pass
+
+    def put(self, id=None):
+        pass
+
+    def delete(self, id=None):
+        pass
+
+
 # ------------------------------------------------------------------------------
 # modify this demo MainHandler to suit your needs
 # ------------------------------------------------------------------------------
@@ -377,6 +444,8 @@ def main():
 
     application = WSGIApplication([
        ('/oauth/(.*)/(.*)', OAuthHandler),
+       ('/person/', PersonCollectionHandler),
+       ('/person/(.*)', PersonHandler),
        ('/', MainHandler)
        ], debug=True)
 

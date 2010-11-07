@@ -99,6 +99,27 @@ class OAuthAccessToken(db.Model):
     oauth_token_secret = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
 
+class TwitterUser(db.Model):
+    id = db.IntegerProperty()
+    screen_name = db.StringProperty()
+    name = db.StringProperty()
+    description = db.TextProperty()
+    profile_image_url = db.LinkProperty()
+
+class Note(db.Model):
+    """Note"""
+    id = db.IntegerProperty()
+    text = db.TextProperty()
+    created_at = db.DateTimeProperty()
+    twitteruser = db.ReferenceProperty(TwitterUser)
+    #twitter_users = db.ListProperty(TwitterUser)
+
+class User(db.Model):
+    """User"""
+    twitter_id = db.IntegerProperty()
+    name = db.StringProperty()
+    notes = db.ListProperty(Note)
+
 # ------------------------------------------------------------------------------
 # oauth client
 # ------------------------------------------------------------------------------

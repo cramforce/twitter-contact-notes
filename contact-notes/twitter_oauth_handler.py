@@ -110,7 +110,7 @@ class Note(db.Model):
     """Note"""
     id = db.IntegerProperty()
     text = db.TextProperty()
-    created_at = db.DateTimeProperty()
+    created = db.DateTimeProperty((auto_now_add=True)
     twitteruser = db.ReferenceProperty(TwitterUser)
     #twitter_users = db.ListProperty(TwitterUser)
 

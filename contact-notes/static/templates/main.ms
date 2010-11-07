@@ -1,0 +1,1 @@
+<a href='#/user'>Show all following</a>

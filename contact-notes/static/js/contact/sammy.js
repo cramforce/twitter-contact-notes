@@ -1,9 +1,12 @@
 require.def("contact/sammy",
-  [],
-  function() {
+  ["contact/model/person", "contact/model/note"],
+  function(person) {
     return {
       ready: function () {
-        alert("loaded")
+        var following = new person.Persons();
+        following.each(function (person) {
+          console.log("Person: " + person);
+        })
       }
     };
   })

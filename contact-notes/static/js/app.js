@@ -1,5 +1,5 @@
 require({
-    baseUrl: "/static/js"
+    baseUrl: "/static/js/"
   },
   ["contact/sammy"],
   function(sammy) {

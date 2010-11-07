@@ -2,3 +2,12 @@
 Twitter Contact Notes
 =====================
 
+
+Libraries
+---------
+
+* sammy.js http://code.quirkey.com/sammy/
+* underscore.js http://documentcloud.github.com/underscore/
+* backbone.js http://documentcloud.github.com/backbone/
+* jquery http://jquery.com/
+* require.js http://requirejs.org/
